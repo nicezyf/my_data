@@ -1,0 +1,7 @@
+mydata <- read_excel("123.xlsx")
+color1<-brewer.pal(9,"YlOrRd")
+color2<-brewer.pal(9,"Greens")
+color3 <- brewer.pal(9,"Set1")
+color<-c(color1,color2,color3)
+colorpan<-sample(color,100,replace = TRUE)
+bubbles(mydata$sale,label = mydata$lea,color = colorpan)
