@@ -10,7 +10,17 @@ unique(china_map@data$NAME) #各个省份名称
 china_data <- join(china_map_data, mydata, type="full") #业务数据
 ggplot(china_data, aes(x = long, y = lat, group = group, fill = 总码洋)) + geom_polygon(colour="grey40") +
 scale_fill_gradient(low="white",high="steelblue") +  #指定渐变填充色，可使用RGB 
-coord_map("polyconic")#去掉多余元素ggplot(china_data, aes(x = long, y = lat, group = group,fill = xiaoshoue)) +  geom_polygon(colour="grey40") +  scale_fill_gradient(low="white",high="steelblue") +  #指定渐变填充色，可使用RGB  coord_map("polyconic") +       #指定投影方式为polyconic，获得常见视角中国地图  theme(               #清除不需要的元素    panel.grid = element_blank(),    panel.background = element_blank(),    axis.text = element_blank(),    axis.ticks = element_blank(),    axis.title = element_blank(),    legend.position = c(0.2,0.3)  )#添加省会名称midpos <- function(x) mean(range(x,na.rm=TRUE)) #取形状内的平均坐标centres <- ddply(china_data,.(province),colwise(midpos,.(long,lat)))
-ggplot(china_data,aes(long,lat))+       #此处语法与前面不同，参考ggplot2一书P85  geom_polygon(aes(group=group,fill=xiaoshoue),colour="black")+  scale_fill_gradient(low="white",high="steelblue") +  coord_map("polyconic") +  geom_text(aes(label=province),data=centres) +  theme(    panel.grid = element_blank(),    panel.background = element_blank(),    axis.text = element_blank(),    axis.ticks = element_blank(),    axis.title = element_blank()  )#省会坐标province_city <- read.csv("chinaprovincecity.csv")  #读取省会城市坐标
-ggplot(china_data,aes(long,lat))+  geom_polygon(aes(group=group,fill=总码洋),colour="grey60")+  scale_fill_gradient(low="grey",high="steelblue") +  coord_map("polyconic") +  geom_text(aes(x = jd,y = wd,label = province), data =province_city)+  theme(    panel.grid = element_blank(),    panel.background = element_blank(),    axis.text = element_blank(),    axis.ticks = element_blank(),    axis.title = element_blank()  )+labs(title="第一季度各省总码洋分布情况图")+theme(plot.title = element_text(size=16,hjust=0.5))
+coord_map("polyconic")#去掉多余元素ggplot(china_data, aes(x = long, y = lat, group = group,fill = xiaoshoue)) +  geom_polygon(colour="grey40") +  
+scale_fill_gradient(low="white",high="steelblue")+theme(panel.grid = element_blank(),panel.background = element_blank(),axis.text = element_blank(),
+axis.ticks = element_blank(),    axis.title = element_blank(),    legend.position = c(0.2,0.3)  )
+#添加省会名称midpos <- function(x) mean(range(x,na.rm=TRUE)) #取形状内的平均坐标
+centres <- ddply(china_data,.(province),colwise(midpos,.(long,lat)))
+ggplot(china_data,aes(long,lat))+geom_polygon(aes(group=group,fill=xiaoshoue),colour="black")+
+scale_fill_gradient(low="white",high="steelblue") +  coord_map("polyconic") + geom_text(aes(label=province),data=centres) +  
+theme(panel.grid = element_blank(),panel.background = element_blank(),axis.text = element_blank(),axis.ticks = element_blank(),axis.title = element_blank()  )
+#省会坐标province_city <- read.csv("chinaprovincecity.csv")  #读取省会城市坐标
+ggplot(china_data,aes(long,lat))+ geom_polygon(aes(group=group,fill=总码洋),colour="grey60")+  scale_fill_gradient(low="grey",high="steelblue") +  
+coord_map("polyconic") +  geom_text(aes(x = jd,y = wd,label = province), data =province_city)+  
+theme(panel.grid = element_blank(),panel.background = element_blank(),axis.text = element_blank(),axis.ticks = element_blank(),axis.title = element_blank()  )+
+labs(title="第一季度各省总码洋分布情况图")+theme(plot.title = element_text(size=16,hjust=0.5))
 ggsave("各省销售额分布情况图.emf", width = 35, height = 20,units = "cm")
