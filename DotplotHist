@@ -1,0 +1,286 @@
+
+
+#
+https://stackoverflow.com/questions/16216312/how-to-plot-stacked-point-histograms-in-ggplot2-in-r
+
+ 
+
+library(ggplot2)
+
+library(RColorBrewer)
+
+library(scales)
+
+# library(grid)
+
+#
+http://www.dataanalytics.org.uk/Data%20Analysis/R%20Monographs/Dot-Charts-and-Histograms.htm
+
+# set.seed(789)
+
+#x <- data.frame(y = sample(1:20, 250,
+replace = TRUE))
+
+# 
+
+# g <- ggplot(x, aes(y)) + 
+
+#  
+geom_dotplot(method="histodot",fill =
+"#00AFBB",binwidth=0.5,dotsize=0.8)+
+
+#  
+theme(
+
+#    
+text=element_text(size=15,color="black"),
+
+#    
+plot.title=element_text(size=15,family="myfont",face="bold.italic",hjust=.5,color="black"),
+
+#    
+legend.position=c(0.9,0.05)
+
+#   )
+
+# g 
+# output to read parameter
+
+# 
+
+# ### calculation of width and height of
+panel
+
+# grid.ls(view=TRUE, grob=FALSE)
+
+# real_width <-
+convertWidth(unit(1,'npc'), 'inch', TRUE)
+
+# real_height <-
+convertHeight(unit(1,'npc'), 'inch', TRUE)
+
+# 
+
+# ### calculation of other values
+
+# width_coordinate_range <-
+diff(ggplot_build(g)$layout$panel_ranges[[1]]$x.range)
+
+# real_binwidth <- real_width /
+width_coordinate_range * 0.8  # 0.8 is
+the argument binwidth
+
+# num_balls <- real_height / 1.1 /
+real_binwidth  # the number of stacked
+balls. 1.1 is expanding value.
+
+# # num_balls is the value of A
+
+# 
+
+# g + ylim(0, num_balls)
+
+ 
+
+## Dotplot histogram
+
+## Mark Gardener 2013
+
+## www.dataanalytics.org.uk
+
+#
+http://www.dataanalytics.org.uk/Data%20Analysis/R%20Monographs/Dot-Charts-and-Histograms.htm
+
+ 
+
+# Create a sequence of numbers between -10
+and 10 incrementing by 0.1.
+
+ 
+
+# Choose the mean as 2.5 and standard
+deviation as 0.5.
+
+x <- rnorm(250 , mean=10 , sd=1)
+
+ 
+
+#x <-sample(1:20, 250, replace = TRUE)
+
+ 
+
+step<-0.2
+
+breaks<-
+seq(min(x)-step,max(x)+step,step)#"sturges"
+
+offset <- 0.4
+
+cex<- 3
+
+pch<- 19
+
+ 
+#  x = data vector
+
+  #
+... = other instructions for plot
+
+  hg
+<- hist(x, breaks = breaks , plot = FALSE) # Make histogram data but do not
+plot
+
+  
+
+ 
+bins <- length(hg$counts)                      # How many bin categories
+are needed?
+
+ 
+yvals <- numeric(0)                 
+# A blank variable to fill in
+
+ 
+for(i in 1:bins) {                 
+# Start a loop
+
+   
+yvals <- c(yvals, hg$counts[i]:0) 
+# Work out the y-values
+
+ 
+}                                  
+# End the loop
+
+ 
+xvals <- numeric(0)                                   # A blank
+variable
+
+ 
+for(i in 1:bins) {                                   # Start a
+loop
+
+   
+xvals <- c(xvals, rep(hg$mids[i], hg$counts[i]+1))  # Work out x-values
+
+ 
+}                                                   
+# End the loop
+
+  dat
+<- data.frame(xvals, yvals)  # Make
+data frame of x, y variables
+
+  dat
+<- dat[yvals > 0, ]          #
+Knock out any zero y-values
+
+ 
+minx <- min(hg$breaks)  # Min
+value for x-axis
+
+  maxx <- max(hg$breaks)  # Max value x-axis
+
+ 
+miny <- min(dat$yvals)  # Min
+value for y-axis
+
+ 
+maxy <- max(dat$yvals)  # Max
+value for y-axis
+
+  #
+Make the plot, without axes, allow points to overspill plot region
+
+  #
+plot(yvals + offset ~ xvals, data = dat, 
+
+ 
+#      xlim = c(minx, maxx), ylim
+= c(miny, maxy),
+
+ 
+#      axes = FALSE, ylab =
+"", xpd = NA,
+
+ 
+#      cex = cex, pch = pch)
+
+  #
+axis(1)   # Add in the x-axis
+
+  # #
+Make results of original data, histogram and plot data
+
+  # 
+
+  #
+result <- list(hist = hg, original = x, plot.data = dat)
+
+  #
+invisible(result)  # Save all the results
+invisibly
+
+## END 
+
+
+ 
+library(vcd)
+
+ 
+fill_gradn <- function(pal) {
+
+   
+scale_fill_gradientn(colours = pal(7), limits = c(0, maxy))
+
+  }
+
+  
+
+  p
+<- ggplot(dat, aes(x=xvals,y=yvals,fill=yvals))+
+
+   
+geom_point(shape=22,size=4.8,colour="black")+
+
+   
+#scale_fill_gradient(low="grey100",high="#00AFBB")+
+
+   
+#seq_gradient_pal(brewer.pal("YlGnBu"))+
+
+   
+#stat_qq(fill = "#00AFBB")+
+
+   
+scale_fill_gradient2(low=brewer.pal(7,"Set1")[2],high=brewer.pal(7,"Set1")[1],limits
+= c(0,  maxy),
+
+                         midpoint =
+mean(dat$yvals))+
+
+   
+#scale_fill_gradientn(colours=c(brewer.pal(7,"Set1")[2],"white",brewer.pal(7,"Set1")[1]),na.value=NA)+
+
+   
+ylim (0, maxy*1.3)+
+
+   
+#stat_qqline()+
+
+   
+theme(
+
+     
+text=element_text(size=15,color="black"),
+
+     
+plot.title=element_text(size=15,family="myfont",face="bold.italic",hjust=.5,color="black"),
+
+     
+legend.position="right"#c(0.9,0.8)
+
+    )
+
+  p
+
